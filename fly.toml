@@ -1,55 +1,54 @@
-# fly.toml file generated for t2-svc on 2021-03-28T21:42:37-04:00
+# fly.toml app configuration file generated for expertify-tunnel on 2023-04-26T17:18:17+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "t2-old"
-
+app = "expertify-tunnel"
+primary_region = "cdg"
 kill_signal = "SIGINT"
 kill_timeout = 5
 
-
 [env]
-  ALLOWED_HOSTS = "t2-svc.fly.dev,2.tunnelto.dev,t2-old.fly.dev,tunnelto.dev"
-  NET_PORT = 10002
+  ALLOWED_HOSTS = "expertify-tunnel-svc.fly.dev,preview.expertify.store,expertify.store"
   BLOCKED_SUB_DOMAINS = "wormhole,dashboard,2,myapp"
-  RUST_LOG="tunnelto_server=debug"
-  TUNNEL_HOST = "tunnelto.dev"
-
-[experimental]
-  private_network=true
+  NET_PORT = "10002"
+  RUST_LOG = "tunnelto_server=debug"
+  TUNNEL_HOST = "preview.expertify.store"
 
 [[services]]
-  internal_port = 5000
   protocol = "tcp"
+  internal_port = 8080
 
+  [[services.ports]]
+    port = 10001
+    handlers = ["tls", "http"]
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
 
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = "10001"
-
   [[services.http_checks]]
-    interval = 10000
+    interval = "10s"
+    timeout = "20s"
+    restart_limit = 0
     method = "get"
     path = "/health_check"
     protocol = "http"
-    timeout = 20000
 
 [[services]]
-  internal_port = 8080
   protocol = "tcp"
+  internal_port = 8080
 
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
 
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = "443"
-
   [[services.http_checks]]
-    interval = 10000
+    interval = "10s"
+    timeout = "20s"
+    restart_limit = 0
     method = "get"
     path = "/0xDEADBEEF_HEALTH_CHECK"
     protocol = "http"
-    timeout = 20000

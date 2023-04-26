@@ -53,7 +53,7 @@ pub async fn accept_connection(socket: TcpStream) {
     let host = match validate_host_prefix(&host) {
         Some(sub_domain) => sub_domain,
         None => {
-            error!("invalid host specified");
+            error!("invalid host specified: {}", host);
             let _ = socket.write_all(HTTP_INVALID_HOST_RESPONSE).await;
             return;
         }
@@ -158,6 +158,7 @@ const HTTP_TUNNEL_REFUSED_RESPONSE: &'static [u8] =
     b"HTTP/1.1 500\r\nContent-Length: 32\r\n\r\nTunnel says: connection refused.";
 const HTTP_OK_RESPONSE: &'static [u8] = b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nok";
 const HEALTH_CHECK_PATH: &'static [u8] = b"/0xDEADBEEF_HEALTH_CHECK";
+const HEALTH_CHECK_PATH_STR: &'static str = "/health_check";
 
 struct StreamWithPeekedHost {
     socket: TcpStream,
@@ -199,7 +200,9 @@ async fn peek_http_request_host(mut socket: TcpStream) -> Option<StreamWithPeeke
     }
 
     // Handle the health check route
-    if req.path.map(|s| s.as_bytes()) == Some(HEALTH_CHECK_PATH) {
+    if req.path == Some(HEALTH_CHECK_PATH_STR)
+        || req.path.map(|s| s.as_bytes()) == Some(HEALTH_CHECK_PATH)
+    {
         let _ = socket.write_all(HTTP_OK_RESPONSE).await.map_err(|e| {
             error!("failed to write health_check: {:?}", e);
         });
