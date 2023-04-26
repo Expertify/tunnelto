@@ -7,8 +7,8 @@ const HOST_ENV: &'static str = "CTRL_HOST";
 const PORT_ENV: &'static str = "CTRL_PORT";
 const TLS_OFF_ENV: &'static str = "CTRL_TLS_OFF";
 
-const DEFAULT_HOST: &'static str = "tunnelto.dev";
-const DEFAULT_CONTROL_HOST: &'static str = "wormhole.tunnelto.dev";
+const DEFAULT_HOST: &'static str = "tunnel.expertify.store";
+const DEFAULT_CONTROL_HOST: &'static str = "wormhole.expertify.store";
 const DEFAULT_CONTROL_PORT: &'static str = "10001";
 
 const SETTINGS_DIR: &'static str = ".tunnelto";

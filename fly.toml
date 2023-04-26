@@ -9,11 +9,12 @@ kill_signal = "SIGINT"
 kill_timeout = 5
 
 [env]
-  ALLOWED_HOSTS = "expertify-tunnel-svc.fly.dev,preview.expertify.store,expertify.store"
+  ALLOWED_HOSTS = "expertify-tunnel-svc.fly.dev,tunnel.expertify.store,expertify.store"
   BLOCKED_SUB_DOMAINS = "wormhole,dashboard,2,myapp"
   NET_PORT = "10002"
+  CTRL_PORT = "10001"
   RUST_LOG = "tunnelto_server=debug"
-  TUNNEL_HOST = "preview.expertify.store"
+  TUNNEL_HOST = "tunnel.expertify.store"
 
 [[services]]
   protocol = "tcp"
