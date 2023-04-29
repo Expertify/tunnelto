@@ -37,6 +37,10 @@ struct Opts {
     #[structopt(short = "s", long = "subdomain")]
     sub_domain: Option<String>,
 
+    /// Specify if the sub-domain is fixed ie. doesn't have a random component
+    #[structopt(short = "f", long = "fixed-subdomain")]
+    fixed_sub_domain: bool,
+
     /// Sets the HOST (i.e. localhost) to forward incoming tunnel traffic to
     #[structopt(long = "host", default_value = "localhost")]
     local_host: String,
@@ -75,6 +79,7 @@ pub struct Config {
     pub local_port: u16,
     pub local_addr: SocketAddr,
     pub sub_domain: Option<String>,
+    pub fixed_sub_domain: bool,
     pub secret_key: Option<SecretKey>,
     pub control_tls_off: bool,
     pub first_run: bool,
@@ -175,6 +180,7 @@ impl Config {
             local_port: opts.port,
             local_addr,
             sub_domain,
+            fixed_sub_domain: opts.fixed_sub_domain,
             dashboard_port: opts.dashboard_port.unwrap_or(0),
             verbose: opts.verbose,
             secret_key: secret_key.map(|s| SecretKey(s)),

@@ -195,6 +195,7 @@ async fn connect_to_wormhole(config: &Config) -> Result<Wormhole, Error> {
     let client_hello = match config.secret_key.clone() {
         Some(secret_key) => ClientHello::generate(
             config.sub_domain.clone(),
+            config.fixed_sub_domain,
             ClientType::Auth { key: secret_key },
         ),
         None => {
@@ -202,7 +203,11 @@ async fn connect_to_wormhole(config: &Config) -> Result<Wormhole, Error> {
             if let Some(reconnect) = RECONNECT_TOKEN.lock().await.clone() {
                 ClientHello::reconnect(reconnect)
             } else {
-                ClientHello::generate(config.sub_domain.clone(), ClientType::Anonymous)
+                ClientHello::generate(
+                    config.sub_domain.clone(),
+                    config.fixed_sub_domain,
+                    ClientType::Anonymous,
+                )
             }
         }
     };

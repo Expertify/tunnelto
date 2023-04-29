@@ -46,17 +46,21 @@ async fn auth_client(
     let (auth_key, client_id, requested_sub_domain) = match client_hello.client_type {
         ClientType::Anonymous => {
             // determine the client and subdomain
-            let (client_id, sub_domain) =
-                match (client_hello.reconnect_token, client_hello.sub_domain) {
-                    (Some(token), _) => {
-                        return handle_reconnect_token(token, websocket).await;
-                    }
-                    (None, Some(sd)) => (
-                        ClientId::generate(),
-                        ServerHello::prefixed_random_domain(&sd),
-                    ),
-                    (None, None) => (ClientId::generate(), ServerHello::random_domain()),
-                };
+            let (client_id, sub_domain) = match (
+                client_hello.reconnect_token,
+                client_hello.sub_domain,
+                client_hello.fixed_sub_domain,
+            ) {
+                (Some(token), _, _) => {
+                    return handle_reconnect_token(token, websocket).await;
+                }
+                (None, Some(sd), false) => (
+                    ClientId::generate(),
+                    ServerHello::prefixed_random_domain(&sd),
+                ),
+                (None, Some(sd), true) => (ClientId::generate(), sd),
+                (None, None, _) => (ClientId::generate(), ServerHello::random_domain()),
+            };
 
             return Some((
                 websocket,
