@@ -6,6 +6,6 @@
 
 # Usage
 ```shell script
-tunnelto -f dev-subdomain --port 8000
+tunnelto -f -s dev-subdomain -p 8000
 ```
 The above command opens a tunnel from dev-subdomian.lt.expertify.store and forwards traffic to `localhost:8000`.
